@@ -1,0 +1,17 @@
+[package]
+name = "omi"
+version = "0.1.0"
+repository = "https://github.com/amphitheatre-app/omi"
+description = "Object Mapping Intelligently, A library that maps object structures to relational databases and provides interfaces for common queries and updates."
+keywords = ["database", "async", "postgres", "mysql", "sqlite"]
+categories = ["database", "asynchronous"]
+edition = "2021"
+license = "Apache-2.0"
+readme = "README.md"
+authors = [
+    "Eguo Wang <wang@gmail.com>",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
