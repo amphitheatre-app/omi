@@ -15,7 +15,7 @@ add it via the git repository method like the following:
 ```toml
 # Cargo.toml
 [dependencies]
-omi = { git = "https://github/license/amphitheatre-app/omi" }
+omi = { git = "https://github.com/amphitheatre-app/omi" }
 ```
 
 ## Getting Started
