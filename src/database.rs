@@ -21,7 +21,7 @@ impl Database {
         Self { dsn }
     }
 
-    pub fn query<T>(&self) -> Vec<T> {
-        vec![]
+    pub fn query<T>(&self, sql: String) -> Result<Vec<T>, ()> {
+        Ok(vec![])
     }
 }

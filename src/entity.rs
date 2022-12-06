@@ -17,4 +17,20 @@ pub trait Entity {
 }
 
 #[derive(Debug, Default)]
-pub struct Meta {}
+pub struct Meta {
+    pub table: String,
+}
+
+#[cfg(test)]
+mod test {
+    #[derive(Default)]
+    struct Product {
+        title: String,
+    }
+
+    #[test]
+    fn test_entity_trait_meta() {
+        let product = Product::default();
+        assert!(Product::meta());
+    }
+}
