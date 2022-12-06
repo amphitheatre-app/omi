@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod statement;
-pub use crate::statement::*;
+pub struct Database {
+    dsn: String,
+}
 
-mod entity;
-pub use crate::entity::*;
+impl Database {
+    pub fn new(dsn: String) -> Self {
+        Self { dsn }
+    }
 
-mod operations;
-pub use crate::operations::*;
-
-mod errors;
-pub use crate::errors::*;
-
-mod database;
-pub use crate::database::*;
+    pub fn query<T>(&self) -> Vec<T> {
+        vec![]
+    }
+}

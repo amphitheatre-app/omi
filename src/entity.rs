@@ -12,17 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod statement;
-pub use crate::statement::*;
+pub trait Entity {
+    fn meta(&self) -> Meta;
+}
 
-mod entity;
-pub use crate::entity::*;
-
-mod operations;
-pub use crate::operations::*;
-
-mod errors;
-pub use crate::errors::*;
-
-mod database;
-pub use crate::database::*;
+#[derive(Debug, Default)]
+pub struct Meta {}
