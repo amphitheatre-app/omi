@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::{Database, Entity};
+use omi::{Database, Entity, Queryable};
 
-#[derive(Debug)]
+#[derive(Debug, Queryable)]
 struct Product {
     title: String,
 }

@@ -28,3 +28,8 @@ mod database;
 pub use crate::database::*;
 
 mod builder;
+
+mod deserialize;
+pub use crate::deserialize::*;
+
+pub use omi_derives::Queryable;
