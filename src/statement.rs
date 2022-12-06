@@ -15,17 +15,19 @@
 use std::any::type_name;
 use std::marker::PhantomData;
 
-use crate::{Database, Entity};
+use crate::builder::*;
+use crate::{Database, Entity, OmiError, Result};
 
 // Declare a type named Statement, which represents a database operation statement.
 pub struct Statement<T> {
-    ops: Ops,
-    filters: Vec<Filters>, // Used to store filter conditions
-    groups: Vec<String>,   // Used to store grouping fields
-    orders: Vec<String>,   // Used to store sorting fields
-    offset: i64,           // Used to store the offset value
-    limit: i64,            // Used to store the limit value
-    phantom: PhantomData<T>,
+    pub(crate) ops: Ops,
+    pub(crate) entity: PhantomData<T>,
+
+    pub(crate) filters: Vec<Filters>, // Used to store filter conditions
+    pub(crate) groups: Vec<String>,   // Used to store grouping fields
+    pub(crate) orders: Vec<String>,   // Used to store sorting fields
+    pub(crate) offset: Option<i64>,   // Used to store the offset value
+    pub(crate) limit: Option<i64>,    // Used to store the limit value
 }
 
 #[derive(PartialEq, Eq, Debug)]
@@ -45,12 +47,12 @@ where
     pub(crate) fn new(ops: Ops) -> Self {
         Self {
             ops,
+            entity: PhantomData,
             filters: vec![],
             groups: vec![],
             orders: vec![],
-            offset: 0,
-            limit: 20,
-            phantom: PhantomData,
+            offset: None,
+            limit: None,
         }
     }
 
@@ -78,32 +80,47 @@ where
     /// Implement the offset() method for the Statement type
     pub fn offset(&mut self, value: i64) -> &mut Self {
         // Set the value of the offset attribute
-        self.offset = value;
+        self.offset = Some(value);
         self
     }
 
     /// Implement the limit() method for the Statement type
     pub fn limit(&mut self, value: i64) -> &mut Self {
         // Set the value of the limit attribute
-        self.limit = value;
+        self.limit = Some(value);
         self
     }
 
+    fn build(&self) -> String {
+        match self.ops {
+            Ops::Insert => build_insert_sql(self),
+            Ops::Update => build_update_sql(self),
+            Ops::Select => build_select_sql(self),
+            Ops::Delete => build_delete_sql(self),
+        }
+    }
+
     /// Implement the execute() method for the Statement type
-    pub fn execute<R>(&self, db: &Database) -> crate::Result<R>
+    pub fn execute(&self, db: &Database) -> Result<R>
     where
         R: From<T> + From<Vec<T>>,
     {
-        let results = db.query::<T>();
+        let sql = self.build();
+        let result = db.query::<T>(sql);
 
-        if type_name::<T>() == type_name::<R>() {
-            return Ok(T::default().into());
+        if let Err(_) = result {
+            return Err(OmiError::DatabaseError);
         }
 
-        return Ok(results.into());
-    }
+        let entities = result.unwrap();
+        if type_name::<T>() == type_name::<Vec<T>>() {
+            return Ok(entities.into());
+        }
 
-    pub(crate) fn ops(&self) -> &Ops {
-        &self.ops
+        if let Some(entity) = entities.first() {
+            return Ok(entity);
+        }
+
+        Err(OmiError::DatabaseError)
     }
 }

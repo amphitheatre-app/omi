@@ -27,11 +27,11 @@ impl Default for Product {
     }
 }
 
-impl Entity for Product {
-    fn meta(&self) -> omi::Meta {
-        omi::Meta::default()
-    }
-}
+// impl Entity for Product {
+//     fn meta(&self) -> omi::Meta {
+//         omi::Meta::default()
+//     }
+// }
 
 #[test]
 fn test_find_one() {
@@ -46,4 +46,10 @@ fn test_find_all() {
     let db = Database::new("mysql://root:123456@omi".into());
     let products = omi::find::<Product>().execute(&db);
     assert_eq!(products, Ok(vec![]))
+}
+
+#[test]
+fn test_entity_get_one() {
+    let db = Database::new("mysql://root:123456@omi".into());
+    let ret = Product::get().execute(&db);
 }

@@ -66,7 +66,7 @@ where
 mod test {
     use crate::{create, delete, find, update, Entity, Ops};
 
-    #[derive(Default)]
+    #[derive(Default, Clone, Copy)]
     struct Product {}
 
     impl Entity for Product {
@@ -78,24 +78,24 @@ mod test {
     #[test]
     fn test_find() {
         let session = find::<Product>();
-        assert_eq!(session.ops(), &Ops::Select);
+        assert_eq!(session.ops, Ops::Select);
     }
 
     #[test]
     fn test_create() {
         let session = create(Product::default());
-        assert_eq!(session.ops(), &Ops::Insert);
+        assert_eq!(session.ops, Ops::Insert);
     }
 
     #[test]
     fn test_update() {
         let session = update(Some(Product::default()));
-        assert_eq!(session.ops(), &Ops::Update);
+        assert_eq!(session.ops, Ops::Update);
     }
 
     #[test]
     fn test_delete() {
         let session = delete(Product::default());
-        assert_eq!(session.ops(), &Ops::Delete);
+        assert_eq!(session.ops, Ops::Delete);
     }
 }
