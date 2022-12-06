@@ -18,6 +18,38 @@ add it via the git repository method like the following:
 omi = { git = "https://github.com/amphitheatre-app/omi" }
 ```
 
+## How to contribute for omi
+
+### Setting the Environment
+
+#### Installing rustup on Linux or macOS
+If you’re using Linux or macOS, open a terminal and enter the following command:
+```shell
+curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
+```
+You will also need a linker, which is a program that Rust uses to join its compiled outputs into one file. It is likely you already have one. If you get linker errors, you should install a C compiler, which will typically include a linker. A C compiler is also useful because some common Rust packages depend on C code and will need a C compiler.
+
+On macOS, you can get a C compiler by running:
+```shell
+ xcode-select --install
+```
+
+#### Installing rustup on Windows
+On Windows, go to `https://www.rust-lang.org/tools/install` and follow the instructions for installing Rust. At some point in the installation, you’ll receive a message explaining that you’ll also need the MSVC build tools for Visual Studio 2013 or later. To acquire the build tools, you’ll need to install Visual Studio 2022. When asked which workloads to install, include:
+- “Desktop Development with C++”
+- The Windows 10 or 11 SDK
+- The English language pack component, along with any other language pack of your choosing
+
+The rest of this book uses commands that work in both cmd.exe and PowerShell. If there are specific differences, we’ll explain which to use.
+
+#### Set rust-toolchain to nightly-2022-12-01 version
+1. When you run the cargo command, you automatically switch to this version
+2. Or set the version manually yourself
+```shell
+rustup install nightly-2022-12-01
+rustup override add nightly-2022-12-01
+```
+
 ## Getting Started
 
 Let's start with a quick preview of some of Omi's main current features, which
