@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::{Ops, Statement};
+
 pub trait Entity {
     fn meta(&self) -> Meta;
 }
@@ -19,6 +21,23 @@ pub trait Entity {
 #[derive(Debug, Default)]
 pub struct Meta {
     pub table: String,
+}
+
+pub trait Queryable<T> {
+    fn get() -> Statement<T>;
+    fn find() -> Statement<T>;
+}
+
+impl <T> Queryable<T> for T 
+where T : Entity + Default
+{
+    fn get() -> Statement<T> {
+        Statement::new(Ops::Select)
+    }
+
+    fn find() -> Statement<T> {
+        Statement::new(Ops::Select)
+    }
 }
 
 #[cfg(test)]

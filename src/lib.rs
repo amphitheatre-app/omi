@@ -28,3 +28,5 @@ mod database;
 pub use crate::database::*;
 
 mod builder;
+
+pub use omi_derives::Entity;
