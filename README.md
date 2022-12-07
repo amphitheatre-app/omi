@@ -190,10 +190,14 @@ omi::transaction::rollback();
 omi::transaction::commit();
 ```
 
-## Raw SQL Querying
+## Raw queries
+
+You can use the `raw()` method for edge cases where existing mechanisms or
+interfaces don't meet your needs, and it will still provide you with object
+mapping support.
 
 ```rust
-omi::sql::<Product>(
+omi::raw::<Product>(
     format!("SELECT * FROM products where id = {}", 123)
 ).execute(db);
 ```

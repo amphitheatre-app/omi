@@ -38,6 +38,7 @@ pub enum Ops {
     Update,
     Select,
     Delete,
+    Raw,
 }
 
 pub struct Filters {}
@@ -97,6 +98,7 @@ where
             Ops::Update => build_update_sql(self),
             Ops::Select => build_select_sql(self),
             Ops::Delete => build_delete_sql(self),
+            Ops::Raw => todo!(),
         }
     }
 

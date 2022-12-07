@@ -17,6 +17,7 @@ pub use crate::statement::*;
 
 pub mod entity;
 pub mod operations;
+pub use operations::raw;
 
 mod errors;
 pub use crate::errors::*;

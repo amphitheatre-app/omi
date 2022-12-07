@@ -25,3 +25,12 @@ pub use queryable::*;
 
 mod updatable;
 pub use updatable::*;
+
+use crate::Statement;
+
+/// You can use the `raw()` method for edge cases where existing mechanisms
+/// or interfaces don't meet your needs, and it will still provide you with
+/// object mapping support.
+pub fn raw<T>(_sql: String) -> Statement<T> {
+    todo!()
+}
