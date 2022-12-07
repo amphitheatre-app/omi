@@ -18,38 +18,6 @@ add it via the git repository method like the following:
 omi = { git = "https://github.com/amphitheatre-app/omi" }
 ```
 
-## How to contribute for omi
-
-### Setting the Environment
-
-#### Installing rustup on Linux or macOS
-If you’re using Linux or macOS, open a terminal and enter the following command:
-```shell
-curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
-```
-You will also need a linker, which is a program that Rust uses to join its compiled outputs into one file. It is likely you already have one. If you get linker errors, you should install a C compiler, which will typically include a linker. A C compiler is also useful because some common Rust packages depend on C code and will need a C compiler.
-
-On macOS, you can get a C compiler by running:
-```shell
- xcode-select --install
-```
-
-#### Installing rustup on Windows
-On Windows, go to `https://www.rust-lang.org/tools/install` and follow the instructions for installing Rust. At some point in the installation, you’ll receive a message explaining that you’ll also need the MSVC build tools for Visual Studio 2013 or later. To acquire the build tools, you’ll need to install Visual Studio 2022. When asked which workloads to install, include:
-- “Desktop Development with C++”
-- The Windows 10 or 11 SDK
-- The English language pack component, along with any other language pack of your choosing
-
-The rest of this book uses commands that work in both cmd.exe and PowerShell. If there are specific differences, we’ll explain which to use.
-
-#### Set rust-toolchain to nightly-2022-12-01 version
-1. When you run the cargo command, you automatically switch to this version
-2. Or set the version manually yourself
-```shell
-rustup install nightly-2022-12-01
-rustup override add nightly-2022-12-01
-```
-
 ## Getting Started
 
 Let's start with a quick preview of some of Omi's main current features, which
@@ -61,7 +29,8 @@ available, so stay tuned!
 ```rust
 use omi::{Column, Entity, Relation}
 
-#[Entity(name = "products")]
+#[Entity(table = "products")]
+#[derive(Queryable, Creatable, Updatable, Deletable)]
 pub struct Product {
   /// Auto incremented primary key
   #[Column(primary, auto, null)]
@@ -83,29 +52,31 @@ pub struct Product {
 
 ## Querying
 
-When the variable is the exact model type, only the first row is obtained, and
-the equivalent SQL is `SELECT * FROM products offset 0 limit 1`.
+Using the `get()` method allows you to retrieve a single record without setting
+any filter conditions, which is equivalent to "`SELECT * FROM products offset 0
+limit 1`". Of course, you can also specify filter fields:
 
 ```rust
-let product: Product = omi::query::<Product>().execute(db);
+Product::get().execute(db);
 ```
-Fetch all records if the variable is iterable, the equivalent SQL is `SELECT *
-FROM products`.
+
+Typically, we use the `find()` method to get multiple rows, which will query the
+database based on the filters you submit, the equivalent SQL is `SELECT * FROM
+products`.
 
 ```rust
-let products: Vec<Product> = omi::query::<Product>().execute(db);
+Product::find().execute(db);
 ```
 
-Execute compound queries by specifying the `filter()` method, which takes simple
-tuple and tuple vector. It's defined like this: `filter<F>(F)`.
-etc.
+Omi's `filter()` method provides a more advanced filtering capability, where you
+can simply enter a tuple, or a vector of combinations of conditions:
 
 ```rust
 // SQL: SELECT * FROM products WHERE id=123
-omi::query::<Product>().filter(("id", 123)).execute(db);
+Product::find().filter(("id", 123)).execute(db);
 
 // SQL: SELECT * FROM products WHERE foo=123 AND bar=456
-omi::query::<Product>()
+Product::find()
     .filter([("foo", 123), ("bar", 456)])
     .execute(db);
 ```
@@ -115,7 +86,7 @@ filtering, the equivalent SQL is `SELECT * FROM products WHERE (title like
 "*abc" AND brand_id=123) OR (title like "*xyz" AND brand_id=456)`.
 
 ```rust
-omi::query::<Product>()
+Product::find()
     .filter(
         Or(
             And([("title", "*abc"), ("brand_id", 123)]),
@@ -130,13 +101,13 @@ direction, or it can be transferred to a tuple vector to sort multiple fields.
 
 ```rust
 // single field
-omi::query::<Product>()
+Product::find()
     .filter(("id", 123))
     .order_by(("id", Desc))
     .execute(db);
 
 // multiple fields
-omi::query::<Product>()
+Product::find()
     .filter(("id", 123))
     .order_by([("id", Desc), ("id", Desc)])
     .execute(db);
@@ -145,24 +116,33 @@ omi::query::<Product>()
 And the group by operation is similar.
 
 ```rust
-omi::query::<Product>().group_by(["brand_id")]).execute(db);
+Product::find().group_by(["brand_id")]).execute(db);
 ```
 
 Finally, the `offset` and `limit` limits are essential for query statements
 
 ```rust
-omi::query::<Product>().offset(0).limit(20).execute(db);
+Product::find().offset(0).limit(20).execute(db);
+```
+
+## Create
+
+Create an instance of your entity and simply call the `create()` method to insert a
+new record into the database:
+
+```rust
+Product::create(product).execute(db);
 ```
 
 ## Update
 
-The first way is to make changes to the instance and then call the `save()` method
+The first way is to make changes to the instance and then call the `update()` method
 to update it. Omi will automatically recognize the model of this instance and
 compare the differences, saving only the changed part of the fields to the
 database.
 
 ```rust
-omi::save(product).execute(db);
+Product::update(product).execute(db);
 ```
 
 Of course, you can also call the `update()` method to update the specified fields
@@ -172,13 +152,13 @@ application.
 
 ```rust
 // single field
-omi::update::<Product>()
+Product::update(product)
     .filter(("id", 123))
     .set("title", "abc")
     .execute(db);
 
 // multiple fields
-omi::update::<Product>()
+Product::update(product)
     .filter(("id", 123))
     .set([("title", "abc"), ("brand_id", "456")])
     .execute(db);
@@ -187,7 +167,7 @@ omi::update::<Product>()
 ## Delete
 
 ```rust
-omi::delete(product).execute(db);
+Product::delete(product).execute(db);
 ```
 
 ## Relations
@@ -196,8 +176,8 @@ You can call the `include()` or `exclude()` methods to include or exclude associ
 objects, and by default all associated data for this model will be included.
 
 ```rust
-omi::query::<Product>().include("reviews").execute(db);
-omi::query::<Product>().exclude("reviews").execute(db);
+Product::get().include("reviews").execute(db);
+Product::get().exclude("reviews").execute(db);
 ```
 
 ## Transaction
@@ -216,6 +196,35 @@ omi::sql::<Product>(
 ).execute(db);
 ```
 
+## Developing guide
+
+If you're new to Rust, the first thing you'll need to do is follow the setup
+instructions to install the Rust compiler and build tools. Once you're set up,
+you can use Cargo to build and run your programs.
+
+You can develop this library using either the stable or the nightly version of
+Rust. If you want to use the latest and greatest features of the Rust language,
+you can switch to the nightly channel using the following command:
+
+```shell
+rustup default nightly
+```
+
+Alternatively, you can set the version manually:
+
+```shell
+rustup install nightly-2022-12-01
+rustup override add nightly-2022-12-01
+```
+
+## Contributing
+
+If anything feels off, or if you feel that some functionality is missing, please
+check out the contributing page. There you will find instructions for sharing
+your feedback, building the tool locally, and submitting pull requests to the
+project.
+
 ## License
 
-Released under the [Apache License 2.0](https://github.com/amphitheatre-app/amphitheatre/blob/master/LICENSE)
+Omi is licensed under [Apache License 2.0](https://github.com/amphitheatre-app/amphitheatre/blob/master/LICENSE).
+See [LICENSE](https://github.com/amphitheatre-app/amphitheatre/blob/master/LICENSE) for more information.
