@@ -57,7 +57,7 @@ any filter conditions, which is equivalent to "`SELECT * FROM products offset 0
 limit 1`". Of course, you can also specify filter fields:
 
 ```rust
-Product::fine().one(db);
+Product::find().one(db);
 ```
 
 Typically, we use the `all()` method to get multiple rows, which will query the
