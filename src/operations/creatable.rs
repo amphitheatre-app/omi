@@ -23,7 +23,7 @@ pub trait Creatable<T> {
 
 impl<T> Creatable<T> for T
 where
-    T: Entity,
+    T: Entity + Default,
 {
     fn create(entity: T) -> Statement<T> {
         Statement::new(Ops::Insert)

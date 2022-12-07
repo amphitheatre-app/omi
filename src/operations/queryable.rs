@@ -22,7 +22,7 @@ pub trait Queryable<T> {
 
 impl<T> Queryable<T> for T
 where
-    T: Entity,
+    T: Entity + Default,
 {
     fn get() -> Statement<T> {
         Statement::new(Ops::Select)

@@ -31,7 +31,7 @@ pub trait Updatable<T> {
 
 impl<T> Updatable<T> for T
 where
-    T: Entity,
+    T: Entity + Default,
 {
     fn update(entity: Option<T>) -> Statement<T> {
         Statement::new(Ops::Update)
