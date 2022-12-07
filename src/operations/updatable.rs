@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::entity::Entity;
-use crate::{Ops, Statement};
+use crate::Statement;
 
 pub trait Updatable<T> {
     /// Begin a update session, which accepts an optional entity and returns a
@@ -27,13 +26,4 @@ pub trait Updatable<T> {
     /// It's mean you want to update the specified fields raw, this way, you need to
     /// call it like with T: `update::<T>()`, for tell Omi that what entity you specified.
     fn update(entity: Option<T>) -> Statement<T>;
-}
-
-impl<T> Updatable<T> for T
-where
-    T: Entity + Default,
-{
-    fn update(entity: Option<T>) -> Statement<T> {
-        Statement::new(Ops::Update)
-    }
 }

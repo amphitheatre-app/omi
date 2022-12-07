@@ -12,19 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::entity::Entity;
-use crate::{Ops, Statement};
+use crate::Statement;
 
-pub trait Updatable<T> {
+pub trait Deletable<T> {
     /// Begin a delete session, which accepts an entity and returns a Statement instance
     fn delete(entity: T) -> Statement<T>;
-}
-
-impl<T> Updatable<T> for T
-where
-    T: Entity + Default,
-{
-    fn delete(entity: T) -> Statement<T> {
-        Statement::new(Ops::Delete)
-    }
 }

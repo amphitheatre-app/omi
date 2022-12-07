@@ -102,26 +102,23 @@ where
     }
 
     /// Implement the execute() method for the Statement type
-    pub fn execute(&self, db: &Database) -> Result<R>
-    where
-        R: From<T> + From<Vec<T>>,
-    {
+    pub fn execute(&self, db: &Database) -> Result<Vec<T>> {
         let sql = self.build();
         let result = db.query::<T>(sql);
 
-        if let Err(_) = result {
-            return Err(OmiError::DatabaseError);
+        match result {
+            Ok(entities) => Ok(entities),
+            Err(_) => Err(OmiError::DatabaseError),
         }
+    }
 
-        let entities = result.unwrap();
-        if type_name::<T>() == type_name::<Vec<T>>() {
-            return Ok(entities.into());
-        }
+    /// Retrieve a single record
+    pub fn one(&self, db: &Database) -> Result<T> {
+        todo!()
+    }
 
-        if let Some(entity) = entities.first() {
-            return Ok(entity);
-        }
-
-        Err(OmiError::DatabaseError)
+    /// Fetch multiple rows
+    pub fn all(&self, db: &Database) -> Result<Vec<T>> {
+        todo!()
     }
 }

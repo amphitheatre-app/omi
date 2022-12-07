@@ -12,23 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::entity::Entity;
-use crate::{Ops, Statement};
+use crate::Statement;
 
 pub trait Queryable<T> {
-    fn get() -> Statement<T>;
+    /// Begin a Select session
     fn find() -> Statement<T>;
-}
-
-impl<T> Queryable<T> for T
-where
-    T: Entity + Default,
-{
-    fn get() -> Statement<T> {
-        Statement::new(Ops::Select)
-    }
-
-    fn find() -> Statement<T> {
-        Statement::new(Ops::Select)
-    }
 }

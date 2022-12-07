@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::entity::Entity;
-use crate::{Ops, Statement};
+use crate::Statement;
 
 pub trait Creatable<T> {
     /// Begin a insert session, which accepts an entity and returns a Statement
@@ -21,21 +20,14 @@ pub trait Creatable<T> {
     fn create(entity: T) -> Statement<T>;
 }
 
-impl<T> Creatable<T> for T
-where
-    T: Entity + Default,
-{
-    fn create(entity: T) -> Statement<T> {
-        Statement::new(Ops::Insert)
-    }
-}
-
 // #[cfg(test)]
 // mod test {
-//     use crate::{Entity, Ops};
+//     use crate::prelude::*;
+//     use crate::Ops;
+//     //    use crate::
 
-//     #[Entity(table = "products")]
-//     #[derive(Default)]
+//     #[entity(table = "products")]
+//     #[derive(Default, Entity, Creatable)]
 //     struct Product {
 //         title: String,
 //     }
