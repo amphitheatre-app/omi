@@ -31,3 +31,11 @@ pub mod prelude {
 
     pub use crate::operations::{Creatable, Deletable, Queryable, Updatable};
 }
+
+pub mod order {
+    #[derive(Debug, PartialEq)]
+    pub enum Direction {
+        Asc,
+        Desc,
+    }
+}

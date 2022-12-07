@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
 use std::marker::PhantomData;
 
 use crate::builder::*;
 use crate::entity::Entity;
+use crate::order::Direction;
 use crate::{Database, OmiError, Result};
 
 // Declare a type named Statement, which represents a database operation statement.
@@ -25,7 +27,7 @@ pub struct Statement<T> {
 
     pub(crate) filters: Vec<Filters>, // Used to store filter conditions
     pub(crate) groups: Vec<String>,   // Used to store grouping fields
-    pub(crate) orders: Vec<String>,   // Used to store sorting fields
+    pub(crate) orders: HashMap<String, Direction>, // Used to store sorting fields
     pub(crate) offset: Option<i64>,   // Used to store the offset value
     pub(crate) limit: Option<i64>,    // Used to store the limit value
 }
@@ -50,7 +52,7 @@ where
             entity: PhantomData,
             filters: vec![],
             groups: vec![],
-            orders: vec![],
+            orders: HashMap::new(),
             offset: None,
             limit: None,
         }
@@ -63,17 +65,15 @@ where
         self
     }
 
-    /// Implement the group_by() method for the Statement type
+    /// Add the grouping columns to the groups attribute
     pub fn group_by(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
-        // Add the grouping field to the groups attribute
         self.groups = cols.into();
         self
     }
 
-    /// Implement the order_by() method for the Statement type
-    pub fn order_by(&mut self, field: &str) -> &mut Self {
-        // Add the sorting field to the orders attribute
-        self.orders.push(field.to_string());
+    /// Add the sorting field to the orders attribute
+    pub fn order_by(&mut self, cols: impl Into<HashMap<String, Direction>>) -> &mut Self {
+        self.orders = cols.into();
         self
     }
 
@@ -144,16 +144,16 @@ where
 
 #[cfg(test)]
 mod test {
+    use std::collections::HashMap;
+
+    use omi::prelude::*;
+
+    use crate as omi;
+    use crate::order::Direction::Desc;
     use crate::{Ops, Statement};
 
-    #[derive(Debug, Default, Clone)]
+    #[derive(Debug, Default, Clone, Entity)]
     struct Product {}
-
-    impl crate::entity::Entity for Product {
-        fn meta() -> crate::entity::Meta {
-            todo!()
-        }
-    }
 
     #[test]
     fn test_group_by() {
@@ -161,5 +161,13 @@ mod test {
         stmt.group_by(["id".into(), "title".into()]);
 
         assert_eq!(stmt.groups, vec!["id", "title"])
+    }
+
+    #[test]
+    fn test_order_by() {
+        let mut stmt: Statement<Product> = Statement::new(Ops::Select);
+        stmt.order_by([("id".into(), Desc)]);
+
+        assert_eq!(stmt.orders, HashMap::from([("id".into(), Desc)]));
     }
 }
