@@ -14,7 +14,7 @@ pub(crate) fn build_update_sql<T: Entity>(stmt: &Statement<T>) -> String {
 pub(crate) fn build_select_sql<T: Entity>(stmt: &Statement<T>) -> String {
     let builder = sql::Select::new();
     builder.select("*");
-    builder.from(&stmt.entity.meta().table);
+    // builder.from(&stmt.entity.meta().table);
 
     if let Some(offset) = stmt.offset {
         builder.offset(offset.to_string().as_str());

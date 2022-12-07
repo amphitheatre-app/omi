@@ -13,7 +13,7 @@
 // limitations under the License.
 
 pub trait Entity {
-    fn meta(&self) -> Meta;
+    fn meta() -> Meta;
 }
 
 #[derive(Debug, Default)]
@@ -21,16 +21,17 @@ pub struct Meta {
     pub table: String,
 }
 
-#[cfg(test)]
-mod test {
-    #[derive(Default)]
-    struct Product {
-        title: String,
-    }
+// #[cfg(test)]
+// mod test {
+//     use crate::prelude::*;
 
-    #[test]
-    fn test_entity_trait_meta() {
-        let product = Product::default();
-        assert!(Product::meta());
-    }
-}
+//     #[derive(Default, Entity)]
+//     struct Product {
+//         title: String,
+//     }
+
+//     #[test]
+//     fn test_entity_meta() {
+//         assert!(Product::meta());
+//     }
+// }

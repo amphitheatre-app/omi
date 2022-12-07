@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::{Database, Entity};
+use omi::prelude::*;
+use omi::Database;
 
 #[derive(Debug, Entity)]
 #[entity(table = "products")]
@@ -32,5 +33,5 @@ impl Default for Product {
 #[test]
 fn test_get_one() {
     let db = Database::new("mysql://root:123456@omi".into());
-    let ret = Product::get().execute(&db);
+    let ret = Product::find().execute(&db);
 }

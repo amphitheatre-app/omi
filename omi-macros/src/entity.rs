@@ -17,18 +17,15 @@ impl DeriveEntity {
             let values =
                 parse_keyed_strings(attr.tokens.clone().into_iter(), attr.span(), &["table"])
                     .map_err(|e| syn::Error::new(attr.span(), "expected `table` attribute"))?;
-            let value = values
-                .get("table")
-                .ok_or_else(|| syn::Error::new(attr.span(), "expected `table` attribute with string value"))?;
+            let value = values.get("table").ok_or_else(|| {
+                syn::Error::new(attr.span(), "expected `table` attribute with string value")
+            })?;
             get_table_name(&ident, value)
         } else {
             get_table_name(&ident, "")
         };
 
-        Ok(Self {
-            ident,
-            table_name
-        })
+        Ok(Self { ident, table_name })
     }
 
     fn expand(&self) -> TokenStream {
@@ -41,7 +38,7 @@ impl DeriveEntity {
 
         quote::quote! {
             impl omi::entity::Entity for #ident {
-                fn meta(&self) -> omi::entity::Meta {
+                fn meta() -> omi::entity::Meta {
                     omi::entity::Meta{
                         table: String::from(#table_name),
                     }
@@ -70,7 +67,7 @@ fn parse_entity_table_name_works_1() {
     };
     let derive_input = syn::parse2(input).unwrap();
     let derive_entity = DeriveEntity::new(derive_input).unwrap();
-    
+
     assert_eq!("my_entity", derive_entity.table_name)
 }
 
@@ -82,6 +79,6 @@ fn parse_entity_table_name_works_2() {
     };
     let derive_input = syn::parse2(input).unwrap();
     let derive_entity = DeriveEntity::new(derive_input).unwrap();
-    
+
     assert_eq!("my_entities", derive_entity.table_name)
 }
