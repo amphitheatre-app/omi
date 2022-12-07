@@ -27,45 +27,45 @@ available, so stay tuned!
 ## Entity definition
 
 ```rust
-use omi::{Column, Entity, Relation}
+use omi::prelude::*
 
-#[Entity(table = "products")]
-#[derive(Queryable, Creatable, Updatable, Deletable)]
+#[entity(table = "products")]
+#[derive(Entity, Queryable, Creatable, Updatable, Deletable)]
 pub struct Product {
   /// Auto incremented primary key
-  #[Column(primary, auto, null)]
+  #[column(primary, auto, null)]
   id: u64,
 
   /// The title of product
-  #[Column(length = 255, default = "")]
+  #[column(length = 255, default = "")]
   title: String
 
   /// The brand of this product
-  #[Relation(belongs_to)]
+  #[relation(belongs_to)]
   brand: Brand,
 
   /// Has many reviews
-  #[Relation(has_many)
+  #[relation(has_many)
   reviews: Vec<Review>,
 }
 ```
 
 ## Querying
 
-Using the `get()` method allows you to retrieve a single record without setting
+Using the `one()` method allows you to retrieve a single record without setting
 any filter conditions, which is equivalent to "`SELECT * FROM products offset 0
 limit 1`". Of course, you can also specify filter fields:
 
 ```rust
-Product::get().execute(db);
+Product::fine().one(db);
 ```
 
-Typically, we use the `find()` method to get multiple rows, which will query the
+Typically, we use the `all()` method to get multiple rows, which will query the
 database based on the filters you submit, the equivalent SQL is `SELECT * FROM
 products`.
 
 ```rust
-Product::find().execute(db);
+Product::find().all(db);
 ```
 
 Omi's `filter()` method provides a more advanced filtering capability, where you
@@ -73,12 +73,12 @@ can simply enter a tuple, or a vector of combinations of conditions:
 
 ```rust
 // SQL: SELECT * FROM products WHERE id=123
-Product::find().filter(("id", 123)).execute(db);
+Product::find().filter(("id", 123)).all(db);
 
 // SQL: SELECT * FROM products WHERE foo=123 AND bar=456
 Product::find()
     .filter([("foo", 123), ("bar", 456)])
-    .execute(db);
+    .all(db);
 ```
 
 Omi can also be more advanced conditional expressions to support `AND`, `OR`
@@ -93,7 +93,7 @@ Product::find()
             And([("title", "*xyz"), ("brand_id", 456)]),
         )
     )
-    .execute(db);
+    .all(db);
 ```
 
 The `order_by()` method takes a tuple to specify the fields to be sorted and the
@@ -104,25 +104,25 @@ direction, or it can be transferred to a tuple vector to sort multiple fields.
 Product::find()
     .filter(("id", 123))
     .order_by(("id", Desc))
-    .execute(db);
+    .all(db);
 
 // multiple fields
 Product::find()
     .filter(("id", 123))
     .order_by([("id", Desc), ("id", Desc)])
-    .execute(db);
+    .all(db);
 ```
 
 And the group by operation is similar.
 
 ```rust
-Product::find().group_by(["brand_id")]).execute(db);
+Product::find().group_by(["brand_id")]).all(db);
 ```
 
 Finally, the `offset` and `limit` limits are essential for query statements
 
 ```rust
-Product::find().offset(0).limit(20).execute(db);
+Product::find().offset(0).limit(20).all(db);
 ```
 
 ## Create
@@ -176,8 +176,8 @@ You can call the `include()` or `exclude()` methods to include or exclude associ
 objects, and by default all associated data for this model will be included.
 
 ```rust
-Product::get().include("reviews").execute(db);
-Product::get().exclude("reviews").execute(db);
+Product::find().filter(("id", 123)).include("reviews").one(db);
+Product::find().filter(("id", 123)).exclude("reviews").one(db);
 ```
 
 ## Transaction

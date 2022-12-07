@@ -1,6 +1,6 @@
 [package]
 name = "omi"
-version = "0.2.0"
+version = "0.2.1"
 repository = "https://github.com/amphitheatre-app/omi"
 description = "Object Mapping Intelligently, A library that maps object structures to relational databases and provides interfaces for common queries and updates."
 keywords = ["database", "async", "postgres", "mysql", "sqlite"]
