@@ -31,7 +31,7 @@ pub struct Statement<T> {
 }
 
 #[derive(PartialEq, Eq, Debug)]
-pub(crate) enum Ops {
+pub enum Ops {
     Insert,
     Update,
     Select,
@@ -44,7 +44,7 @@ impl<T> Statement<T>
 where
     T: Entity + Default,
 {
-    pub(crate) fn new(ops: Ops) -> Self {
+    pub fn new(ops: Ops) -> Self {
         Self {
             ops,
             entity: PhantomData,

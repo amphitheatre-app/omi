@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use omi::operations::{Creatable, Deletable, Queryable, Updatable};
 use omi::prelude::*;
 use omi::Database;
 
-#[derive(Debug, Entity)]
+#[derive(Debug, Entity, Creatable, Deletable, Queryable, Updatable)]
 #[entity(table = "products")]
 struct Product {
     #[column(length = 255, default = "")]
