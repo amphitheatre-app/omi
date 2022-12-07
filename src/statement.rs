@@ -153,6 +153,7 @@ mod test {
     use crate::{Ops, Statement};
 
     #[derive(Debug, Default, Clone, Entity)]
+    #[entity(table = "products")]
     struct Product {}
 
     #[test]

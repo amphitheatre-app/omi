@@ -29,6 +29,7 @@ mod builder;
 pub mod prelude {
     pub use omi_macros::{Creatable, Deletable, Entity, Queryable, Updatable};
 
+    pub use crate::entity::Entity;
     pub use crate::operations::{Creatable, Deletable, Queryable, Updatable};
 }
 

@@ -21,17 +21,19 @@ pub struct Meta {
     pub table: String,
 }
 
-// #[cfg(test)]
-// mod test {
-//     use crate::prelude::*;
+#[cfg(test)]
+mod test {
 
-//     #[derive(Default, Entity)]
-//     struct Product {
-//         title: String,
-//     }
+    use omi::prelude::*;
 
-//     #[test]
-//     fn test_entity_meta() {
-//         assert!(Product::meta());
-//     }
-// }
+    use crate as omi;
+
+    #[derive(Debug, Default, Clone, Entity)]
+    #[entity(table = "products")]
+    struct Product {}
+
+    #[test]
+    fn test_entity_meta() {
+        assert_eq!(Product::meta().table, "products");
+    }
+}
