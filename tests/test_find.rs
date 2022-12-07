@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::operations::{Creatable, Deletable, Queryable, Updatable};
+// use omi::operations::Queryable;
 use omi::prelude::*;
-use omi::Database;
+use omi::{Database, OmiError};
 
-#[derive(Debug, Entity, Creatable, Deletable, Queryable, Updatable)]
+#[derive(Debug, Entity, Queryable, PartialEq, Clone)]
 #[entity(table = "products")]
 struct Product {
     #[column(length = 255, default = "")]
@@ -32,7 +32,23 @@ impl Default for Product {
 }
 
 #[test]
-fn test_get_one() {
+fn test_find_one() {
     let db = Database::new("mysql://root:123456@omi".into());
-    let ret = Product::find().execute(&db);
+    let result = Product::find().one(&db);
+
+    match result {
+        Ok(product) => assert_eq!(product, Product::default()),
+        Err(error) => assert_eq!(error, OmiError::NotFoundError),
+    }
+}
+
+#[test]
+fn test_find_all() {
+    let db = Database::new("mysql://root:123456@omi".into());
+    let result = Product::find().all(&db);
+
+    match result {
+        Ok(products) => assert!(products.is_empty()),
+        Err(error) => assert_eq!(error, OmiError::DatabaseError),
+    }
 }

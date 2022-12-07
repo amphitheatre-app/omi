@@ -42,7 +42,7 @@ pub struct Filters {}
 
 impl<T> Statement<T>
 where
-    T: Entity + Default,
+    T: Entity + Default + From<T> + Clone,
 {
     pub fn new(ops: Ops) -> Self {
         Self {
@@ -112,12 +112,29 @@ where
     }
 
     /// Retrieve a single record
-    pub fn one(&self, db: &Database) -> Result<T> {
-        todo!()
+    pub fn one(&mut self, db: &Database) -> Result<T> {
+        self.limit = Some(1);
+
+        let sql = self.build();
+        let result = db.query::<T>(sql);
+
+        match result {
+            Ok(entities) => match entities.first() {
+                Some(entity) => Ok(entity.clone()),
+                None => Err(OmiError::NotFoundError),
+            },
+            Err(_) => Err(OmiError::DatabaseError),
+        }
     }
 
     /// Fetch multiple rows
     pub fn all(&self, db: &Database) -> Result<Vec<T>> {
-        todo!()
+        let sql = self.build();
+        let result = db.query::<T>(sql);
+
+        match result {
+            Ok(entities) => Ok(entities),
+            Err(_) => Err(OmiError::DatabaseError),
+        }
     }
 }
