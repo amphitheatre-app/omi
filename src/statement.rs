@@ -25,11 +25,26 @@ pub struct Statement<T> {
     pub(crate) ops: Ops,
     pub(crate) entity: PhantomData<T>,
 
-    pub(crate) filters: Vec<Filters>, // Used to store filter conditions
-    pub(crate) groups: Vec<String>,   // Used to store grouping fields
-    pub(crate) orders: HashMap<String, Direction>, // Used to store sorting fields
-    pub(crate) offset: Option<i64>,   // Used to store the offset value
-    pub(crate) limit: Option<i64>,    // Used to store the limit value
+    /// Used to store filter conditions
+    pub(crate) filters: Vec<Filters>,
+
+    /// Used to store included associated objects names
+    pub(crate) includes: Vec<String>,
+    // Used to store included associated objects names
+    pub(crate) excludes: Vec<String>,
+
+    /// Used to store specified fields will be update.
+    pub(crate) changes: HashMap<String, String>,
+
+    /// Used to store grouping fields
+    pub(crate) groups: Vec<String>,
+    /// Used to store sorting fields and direction
+    pub(crate) orders: HashMap<String, Direction>,
+
+    /// Used to store the offset value
+    pub(crate) offset: Option<i64>,
+    /// Used to store the limit value
+    pub(crate) limit: Option<i64>,
 }
 
 #[derive(PartialEq, Eq, Debug)]
@@ -53,6 +68,9 @@ where
             entity: PhantomData,
             filters: vec![],
             groups: vec![],
+            includes: vec![],
+            excludes: vec![],
+            changes: HashMap::new(),
             orders: HashMap::new(),
             offset: None,
             limit: None,
@@ -63,6 +81,24 @@ where
     pub fn filter(&mut self, filters: Filters) -> &mut Self {
         // Add the filter conditions to the filters attribute
         self.filters.push(filters);
+        self
+    }
+
+    /// Include associated objects
+    pub fn include(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
+        self.includes = cols.into();
+        self
+    }
+
+    /// Exclude associated objects
+    pub fn exclude(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
+        self.excludes = cols.into();
+        self
+    }
+
+    /// Set the specified fields to update
+    pub fn set(&mut self, fields: impl Into<HashMap<String, String>>) -> &mut Self {
+        self.changes = fields.into();
         self
     }
 
