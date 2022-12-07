@@ -96,14 +96,16 @@ Product::find()
     .all(db);
 ```
 
-The `order_by()` method takes a tuple to specify the fields to be sorted and the
-direction, or it can be transferred to a tuple vector to sort multiple fields.
+The `order_by()` method takes a tuple vector to specify the field or multiple
+field to be sorted and the direction.
 
 ```rust
+use crate::order::Direction::Desc;
+
 // single field
 Product::find()
     .filter(("id", 123))
-    .order_by(("id", Desc))
+    .order_by([("id", Desc)])
     .all(db);
 
 // multiple fields
@@ -116,7 +118,7 @@ Product::find()
 And the group by operation is similar.
 
 ```rust
-Product::find().group_by(["brand_id")]).all(db);
+Product::find().group_by(["brand_id", "status"]).all(db);
 ```
 
 Finally, the `offset` and `limit` limits are essential for query statements
@@ -142,7 +144,7 @@ compare the differences, saving only the changed part of the fields to the
 database.
 
 ```rust
-Product::update(product).execute(db);
+Product::update(Some(product)).execute(db);
 ```
 
 Of course, you can also call the `update()` method to update the specified fields
@@ -152,13 +154,13 @@ application.
 
 ```rust
 // single field
-Product::update(product)
+Product::update(None)
     .filter(("id", 123))
     .set("title", "abc")
     .execute(db);
 
 // multiple fields
-Product::update(product)
+Product::update(None)
     .filter(("id", 123))
     .set([("title", "abc"), ("brand_id", "456")])
     .execute(db);

@@ -18,3 +18,20 @@ pub trait Queryable<T> {
     /// Begin a Select session
     fn find() -> Statement<T>;
 }
+
+#[cfg(test)]
+mod test {
+    use omi::prelude::*;
+
+    use crate::{self as omi, Ops};
+
+    #[derive(Debug, Default, Clone, Entity, Queryable)]
+    #[entity(table = "products")]
+    struct Product {}
+
+    #[test]
+    fn test_queryable_find() {
+        let session = Product::find();
+        assert_eq!(session.ops, Ops::Select);
+    }
+}

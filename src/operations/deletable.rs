@@ -18,3 +18,20 @@ pub trait Deletable<T> {
     /// Begin a delete session, which accepts an entity and returns a Statement instance
     fn delete(entity: T) -> Statement<T>;
 }
+
+#[cfg(test)]
+mod test {
+    use omi::prelude::*;
+
+    use crate::{self as omi, Ops};
+
+    #[derive(Debug, Default, Clone, Entity, Deletable)]
+    #[entity(table = "products")]
+    struct Product {}
+
+    #[test]
+    fn test_deletable_delete() {
+        let session = Product::delete(Product::default());
+        assert_eq!(session.ops, Ops::Delete);
+    }
+}

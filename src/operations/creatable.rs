@@ -20,21 +20,19 @@ pub trait Creatable<T> {
     fn create(entity: T) -> Statement<T>;
 }
 
-// #[cfg(test)]
-// mod test {
-//     use crate::prelude::*;
-//     use crate::Ops;
-//     //    use crate::
+#[cfg(test)]
+mod test {
+    use omi::prelude::*;
 
-//     #[entity(table = "products")]
-//     #[derive(Default, Entity, Creatable)]
-//     struct Product {
-//         title: String,
-//     }
+    use crate::{self as omi, Ops};
 
-//     #[test]
-//     fn test_create() {
-//         let session = Product::create(Product::default());
-//         assert_eq!(session.ops, Ops::Insert);
-//     }
-// }
+    #[derive(Debug, Default, Clone, Entity, Creatable)]
+    #[entity(table = "products")]
+    struct Product {}
+
+    #[test]
+    fn test_creatable_create() {
+        let session = Product::create(Product::default());
+        assert_eq!(session.ops, Ops::Insert);
+    }
+}

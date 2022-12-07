@@ -27,3 +27,26 @@ pub trait Updatable<T> {
     /// call it like with T: `update::<T>()`, for tell Omi that what entity you specified.
     fn update(entity: Option<T>) -> Statement<T>;
 }
+
+#[cfg(test)]
+mod test {
+    use omi::prelude::*;
+
+    use crate::{self as omi, Ops};
+
+    #[derive(Debug, Default, Clone, Entity, Updatable)]
+    #[entity(table = "products")]
+    struct Product {}
+
+    #[test]
+    fn test_updatable_update_none() {
+        let session = Product::update(None);
+        assert_eq!(session.ops, Ops::Update);
+    }
+
+    #[test]
+    fn test_updatable_update_instance() {
+        let session = Product::update(Some(Product::default()));
+        assert_eq!(session.ops, Ops::Update);
+    }
+}

@@ -23,7 +23,6 @@ pub struct Meta {
 
 #[cfg(test)]
 mod test {
-
     use omi::prelude::*;
 
     use crate as omi;
