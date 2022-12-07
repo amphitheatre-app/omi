@@ -16,7 +16,8 @@ use std::any::type_name;
 use std::marker::PhantomData;
 
 use crate::builder::*;
-use crate::{Database, Entity, OmiError, Result};
+use crate::entity::Entity;
+use crate::{Database, OmiError, Result};
 
 // Declare a type named Statement, which represents a database operation statement.
 pub struct Statement<T> {

@@ -12,25 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::{Column, Database, Entity, Queryable};
+use crate::entity::Entity;
+use crate::{Ops, Statement};
 
-#[Entity(table = "products")]
-#[derive(Debug, Queryable)]
-struct Product {
-    #[Column(length = 255, default = "")]
-    title: String,
+pub trait Updatable<T> {
+    /// Begin a delete session, which accepts an entity and returns a Statement instance
+    fn delete(entity: T) -> Statement<T>;
 }
 
-impl Default for Product {
-    fn default() -> Self {
-        Self {
-            title: "test".into(),
-        }
+impl<T> Updatable<T> for T
+where
+    T: Entity,
+{
+    fn delete(entity: T) -> Statement<T> {
+        Statement::new(Ops::Delete)
     }
-}
-
-#[test]
-fn test_get_one() {
-    let db = Database::new("mysql://root:123456@omi".into());
-    let ret = Product::get().execute(&db);
 }

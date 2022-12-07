@@ -15,11 +15,8 @@
 mod statement;
 pub use crate::statement::*;
 
-mod entity;
-pub use crate::entity::*;
-
-mod operations;
-pub use crate::operations::*;
+pub mod entity;
+pub mod operations;
 
 mod errors;
 pub use crate::errors::*;
@@ -30,3 +27,7 @@ pub use crate::database::*;
 mod builder;
 
 pub use omi_derives::Entity;
+//pub use omi_derives::Queryable;
+//pub use omi_derives::Creatable;
+//pub use omi_derives::Updatable;
+//pub use omi_derives::Deletable;

@@ -12,25 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::{Column, Database, Entity, Queryable};
+use crate::entity::Entity;
+use crate::{Ops, Statement};
 
-#[Entity(table = "products")]
-#[derive(Debug, Queryable)]
-struct Product {
-    #[Column(length = 255, default = "")]
-    title: String,
+pub trait Queryable<T> {
+    fn get() -> Statement<T>;
+    fn find() -> Statement<T>;
 }
 
-impl Default for Product {
-    fn default() -> Self {
-        Self {
-            title: "test".into(),
-        }
+impl<T> Queryable<T> for T
+where
+    T: Entity,
+{
+    fn get() -> Statement<T> {
+        Statement::new(Ops::Select)
     }
-}
 
-#[test]
-fn test_get_one() {
-    let db = Database::new("mysql://root:123456@omi".into());
-    let ret = Product::get().execute(&db);
+    fn find() -> Statement<T> {
+        Statement::new(Ops::Select)
+    }
 }

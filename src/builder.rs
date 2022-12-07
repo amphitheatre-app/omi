@@ -1,6 +1,7 @@
 use sql_query_builder as sql;
 
-use crate::{Entity, Statement};
+use crate::entity::Entity;
+use crate::Statement;
 
 pub(crate) fn build_insert_sql<T: Entity>(stmt: &Statement<T>) -> String {
     sql::Insert::new().as_string()

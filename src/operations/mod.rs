@@ -12,25 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::{Column, Database, Entity, Queryable};
+//! Provides functions for database operations
 
-#[Entity(table = "products")]
-#[derive(Debug, Queryable)]
-struct Product {
-    #[Column(length = 255, default = "")]
-    title: String,
-}
-
-impl Default for Product {
-    fn default() -> Self {
-        Self {
-            title: "test".into(),
-        }
-    }
-}
-
-#[test]
-fn test_get_one() {
-    let db = Database::new("mysql://root:123456@omi".into());
-    let ret = Product::get().execute(&db);
-}
+mod creatable;
+mod deletable;
+mod queryable;
+mod updatable;
