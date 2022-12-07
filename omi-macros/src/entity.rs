@@ -12,14 +12,15 @@ impl DeriveEntity {
     fn new(input: syn::DeriveInput) -> syn::Result<Self> {
         let ident = input.ident;
 
-        let table_name = if !input.attrs.is_empty() {
-            let attr = &input.attrs[0];
+        let attr = input.attrs.iter().find(|a| a.path.is_ident("entity"));
+
+        let table_name = if let Some(attr) = attr {
             let values =
                 parse_keyed_strings(attr.tokens.clone().into_iter(), attr.span(), &["table"])
-                    .map_err(|e| syn::Error::new(attr.span(), "expected `table` attribute"))?;
-            let value = values.get("table").ok_or_else(|| {
-                syn::Error::new(attr.span(), "expected `table` attribute with string value")
-            })?;
+                    .map_err(|_| syn::Error::new(attr.span(), "expected `table` attribute"))?;
+            let value = values
+                .get("table")
+                .ok_or_else(|| syn::Error::new(attr.span(), "expected `table` attribute with string value"))?;
             get_table_name(&ident, value)
         } else {
             get_table_name(&ident, "")

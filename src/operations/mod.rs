@@ -15,6 +15,13 @@
 //! Provides functions for database operations
 
 mod creatable;
+pub use creatable::*;
+
 mod deletable;
+pub use deletable::*;
+
 mod queryable;
+pub use queryable::*;
+
 mod updatable;
+pub use updatable::*;

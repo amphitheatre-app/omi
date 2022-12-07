@@ -28,8 +28,8 @@ mod builder;
 
 pub mod prelude {
     pub use omi_macros::Entity;
-    // pub use omi_macros::Queryable;
-    // pub use omi_macros::Updatable;
-    // pub use omi_macros::Creatable;
-    // pub use omi_macros::Deletable;
+    pub use omi_macros::Creatable;
+    pub use omi_macros::Deletable;
+    pub use omi_macros::Queryable;
+    pub use omi_macros::Updatable;
 }
