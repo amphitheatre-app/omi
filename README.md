@@ -178,16 +178,16 @@ You can call the `include()` or `exclude()` methods to include or exclude associ
 objects, and by default all associated data for this model will be included.
 
 ```rust
-Product::find().filter(("id", 123)).include("reviews").one(db);
-Product::find().filter(("id", 123)).exclude("reviews").one(db);
+Product::find().filter(("id", 123)).include(["reviews"]).one(db);
+Product::find().filter(("id", 123)).exclude(["reviews"]).one(db);
 ```
 
 ## Transaction
 
 ```rust
-omi::transaction.start();
-omi::transaction.rollback();
-omi::transaction.commit();
+omi::transaction::start();
+omi::transaction::rollback();
+omi::transaction::commit();
 ```
 
 ## Raw SQL Querying
@@ -198,35 +198,14 @@ omi::sql::<Product>(
 ).execute(db);
 ```
 
-## Developing guide
-
-If you're new to Rust, the first thing you'll need to do is follow the setup
-instructions to install the Rust compiler and build tools. Once you're set up,
-you can use Cargo to build and run your programs.
-
-You can develop this library using either the stable or the nightly version of
-Rust. If you want to use the latest and greatest features of the Rust language,
-you can switch to the nightly channel using the following command:
-
-```shell
-rustup default nightly
-```
-
-Alternatively, you can set the version manually:
-
-```shell
-rustup install nightly-2022-12-01
-rustup override add nightly-2022-12-01
-```
-
 ## Contributing
 
 If anything feels off, or if you feel that some functionality is missing, please
-check out the contributing page. There you will find instructions for sharing
-your feedback, building the tool locally, and submitting pull requests to the
-project.
+check out the [contributing](CONTRIBUTING.md) page. There you will find
+instructions for sharing your feedback, building the tool locally, and
+submitting pull requests to the project.
 
 ## License
 
-Omi is licensed under [Apache License 2.0](https://github.com/amphitheatre-app/amphitheatre/blob/master/LICENSE).
-See [LICENSE](https://github.com/amphitheatre-app/amphitheatre/blob/master/LICENSE) for more information.
+Omi is licensed under Apache License 2.0.
+See [LICENSE](LICENSE) for more information.
