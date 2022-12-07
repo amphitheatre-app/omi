@@ -26,7 +26,7 @@ pub use crate::database::*;
 
 mod builder;
 
-pub use omi_derives::Entity;
+pub use omi_macros::Entity;
 //pub use omi_derives::Queryable;
 //pub use omi_derives::Creatable;
 //pub use omi_derives::Updatable;

@@ -16,7 +16,7 @@ authors = [
 
 [dependencies]
 sql_query_builder = "1.0"
-omi_derives = { path = "./omi_derives" }
+omi-macros = { path = "./omi-macros" }
 
 [workspace]
-members = [ "omi_derives" ]
+members = [ "omi-macros" ]

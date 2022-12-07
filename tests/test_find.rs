@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use omi::{Column, Database, Entity, Queryable};
+use omi::{Database, Entity};
 
-#[Entity(table = "products")]
-#[derive(Debug, Queryable)]
+#[derive(Debug, Entity)]
+#[entity(table = "products")]
 struct Product {
-    #[Column(length = 255, default = "")]
+    #[column(length = 255, default = "")]
     title: String,
 }
 

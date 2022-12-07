@@ -1,14 +1,17 @@
 [package]
-name = "omi_derives"
+name = "omi-macros"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
+name = "omi_macros"
 proc-macro = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-syn = { versino = "1.0", features = [ "proc-macro", "full"] }
+syn = "1.0"
 quote = "1.0"
 proc-macro2 = "1"
+heck = "0.4"
+proc-macro-util = "0.1"
