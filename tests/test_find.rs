@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// use omi::operations::Queryable;
 use omi::prelude::*;
 use omi::{Database, OmiError};
 
@@ -49,6 +48,6 @@ fn test_find_all() {
 
     match result {
         Ok(products) => assert!(products.is_empty()),
-        Err(error) => assert_eq!(error, OmiError::DatabaseError),
+        Err(error) => assert_eq!(error, OmiError::NotFoundError),
     }
 }

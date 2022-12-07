@@ -133,7 +133,10 @@ where
         let result = db.query::<T>(sql);
 
         match result {
-            Ok(entities) => Ok(entities),
+            Ok(entities) => match !entities.is_empty() {
+                true => Ok(entities),
+                false => Err(OmiError::NotFoundError),
+            },
             Err(_) => Err(OmiError::DatabaseError),
         }
     }
