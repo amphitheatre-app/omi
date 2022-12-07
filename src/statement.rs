@@ -64,9 +64,9 @@ where
     }
 
     /// Implement the group_by() method for the Statement type
-    pub fn group_by(&mut self, field: &str) -> &mut Self {
+    pub fn group_by(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
         // Add the grouping field to the groups attribute
-        self.groups.push(field.to_string());
+        self.groups = cols.into();
         self
     }
 
@@ -139,5 +139,27 @@ where
             },
             Err(_) => Err(OmiError::DatabaseError),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::{Ops, Statement};
+
+    #[derive(Debug, Default, Clone)]
+    struct Product {}
+
+    impl crate::entity::Entity for Product {
+        fn meta() -> crate::entity::Meta {
+            todo!()
+        }
+    }
+
+    #[test]
+    fn test_group_by() {
+        let mut stmt: Statement<Product> = Statement::new(Ops::Select);
+        stmt.group_by(["id".into(), "title".into()]);
+
+        assert_eq!(stmt.groups, vec!["id", "title"])
     }
 }
