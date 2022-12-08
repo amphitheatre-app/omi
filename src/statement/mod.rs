@@ -12,201 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
-use std::marker::PhantomData;
+mod delete_statement;
+pub use self::delete_statement::DeleteStatement;
 
-use crate::builder::*;
-use crate::entity::Entity;
-use crate::order::Direction;
-use crate::{Database, OmiError, Result};
+mod insert_statement;
+pub use self::insert_statement::InsertStatement;
+
+mod raw_statement;
+pub use self::raw_statement::RawStatement;
+
+mod select_statement;
+pub use self::select_statement::SelectStatement;
+
+mod update_statement;
+pub use self::update_statement::UpdateStatement;
 
 // Declare a type named Statement, which represents a database operation statement.
-pub struct Statement<T> {
-    pub(crate) ops: Ops,
-    pub(crate) entity: PhantomData<T>,
-
-    /// Used to store filter conditions
-    pub(crate) filters: Vec<Filters>,
-
-    /// Used to store included associated objects names
-    pub(crate) includes: Vec<String>,
-    // Used to store included associated objects names
-    pub(crate) excludes: Vec<String>,
-
-    /// Used to store specified fields will be update.
-    pub(crate) changes: HashMap<String, String>,
-
-    /// Used to store grouping fields
-    pub(crate) groups: Vec<String>,
-    /// Used to store sorting fields and direction
-    pub(crate) orders: HashMap<String, Direction>,
-
-    /// Used to store the offset value
-    pub(crate) offset: Option<i64>,
-    /// Used to store the limit value
-    pub(crate) limit: Option<i64>,
+pub enum Statement<T> {
+    Delete(DeleteStatement<T>),
+    Insert(InsertStatement<T>),
+    Raw(RawStatement<T>),
+    Select(SelectStatement<T>),
+    Update(UpdateStatement<T>),
 }
 
-#[derive(PartialEq, Eq, Debug)]
-pub enum Ops {
-    Insert,
-    Update,
-    Select,
-    Delete,
-    Raw,
-}
-
+#[derive(Clone, Copy)]
 pub struct Filters {}
-
-impl<T> Statement<T>
-where
-    T: Entity + Default + From<T> + Clone,
-{
-    pub fn new(ops: Ops) -> Self {
-        Self {
-            ops,
-            entity: PhantomData,
-            filters: vec![],
-            groups: vec![],
-            includes: vec![],
-            excludes: vec![],
-            changes: HashMap::new(),
-            orders: HashMap::new(),
-            offset: None,
-            limit: None,
-        }
-    }
-
-    /// Implement the filter() method for the Statement type
-    pub fn filter(&mut self, filters: Filters) -> &mut Self {
-        // Add the filter conditions to the filters attribute
-        self.filters.push(filters);
-        self
-    }
-
-    /// Include associated objects
-    pub fn include(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
-        self.includes = cols.into();
-        self
-    }
-
-    /// Exclude associated objects
-    pub fn exclude(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
-        self.excludes = cols.into();
-        self
-    }
-
-    /// Set the specified fields to update
-    pub fn set(&mut self, fields: impl Into<HashMap<String, String>>) -> &mut Self {
-        self.changes = fields.into();
-        self
-    }
-
-    /// Add the grouping columns to the groups attribute
-    pub fn group_by(&mut self, cols: impl Into<Vec<String>>) -> &mut Self {
-        self.groups = cols.into();
-        self
-    }
-
-    /// Add the sorting field to the orders attribute
-    pub fn order_by(&mut self, cols: impl Into<HashMap<String, Direction>>) -> &mut Self {
-        self.orders = cols.into();
-        self
-    }
-
-    /// Implement the offset() method for the Statement type
-    pub fn offset(&mut self, value: i64) -> &mut Self {
-        // Set the value of the offset attribute
-        self.offset = Some(value);
-        self
-    }
-
-    /// Implement the limit() method for the Statement type
-    pub fn limit(&mut self, value: i64) -> &mut Self {
-        // Set the value of the limit attribute
-        self.limit = Some(value);
-        self
-    }
-
-    fn build(&self) -> String {
-        match self.ops {
-            Ops::Insert => build_insert_sql(self),
-            Ops::Update => build_update_sql(self),
-            Ops::Select => build_select_sql(self),
-            Ops::Delete => build_delete_sql(self),
-            Ops::Raw => todo!(),
-        }
-    }
-
-    /// Implement the execute() method for the Statement type
-    pub fn execute(&self, db: &Database) -> Result<Vec<T>> {
-        let sql = self.build();
-        let result = db.query::<T>(sql);
-
-        match result {
-            Ok(entities) => Ok(entities),
-            Err(_) => Err(OmiError::DatabaseError),
-        }
-    }
-
-    /// Retrieve a single record
-    pub fn one(&mut self, db: &Database) -> Result<T> {
-        self.limit = Some(1);
-
-        let sql = self.build();
-        let result = db.query::<T>(sql);
-
-        match result {
-            Ok(entities) => match entities.first() {
-                Some(entity) => Ok(entity.clone()),
-                None => Err(OmiError::NotFoundError),
-            },
-            Err(_) => Err(OmiError::DatabaseError),
-        }
-    }
-
-    /// Fetch multiple rows
-    pub fn all(&self, db: &Database) -> Result<Vec<T>> {
-        let sql = self.build();
-        let result = db.query::<T>(sql);
-
-        match result {
-            Ok(entities) => match !entities.is_empty() {
-                true => Ok(entities),
-                false => Err(OmiError::NotFoundError),
-            },
-            Err(_) => Err(OmiError::DatabaseError),
-        }
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use std::collections::HashMap;
-
-    use omi::prelude::*;
-
-    use crate as omi;
-    use crate::order::Direction::Desc;
-    use crate::{Ops, Statement};
-
-    #[derive(Debug, Default, Clone, Entity)]
-    #[entity(table = "products")]
-    struct Product {}
-
-    #[test]
-    fn test_group_by() {
-        let mut stmt: Statement<Product> = Statement::new(Ops::Select);
-        stmt.group_by(["id".into(), "title".into()]);
-
-        assert_eq!(stmt.groups, vec!["id", "title"])
-    }
-
-    #[test]
-    fn test_order_by() {
-        let mut stmt: Statement<Product> = Statement::new(Ops::Select);
-        stmt.order_by([("id".into(), Desc)]);
-
-        assert_eq!(stmt.orders, HashMap::from([("id".into(), Desc)]));
-    }
-}

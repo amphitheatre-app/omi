@@ -12,26 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::Statement;
+use crate::statement::DeleteStatement;
 
 pub trait Deletable<T> {
     /// Begin a delete session, which accepts an entity and returns a Statement instance
-    fn delete(entity: T) -> Statement<T>;
+    fn delete(entity: T) -> DeleteStatement<T>;
 }
 
 #[cfg(test)]
 mod test {
     use omi::prelude::*;
 
-    use crate::{self as omi, Ops};
+    use crate as omi;
 
-    #[derive(Debug, Default, Clone, Entity, Deletable)]
+    #[derive(Debug, Default, Clone, Entity, Deletable, PartialEq)]
     #[entity(table = "products")]
     struct Product {}
 
     #[test]
     fn test_deletable_delete() {
-        let session = Product::delete(Product::default());
-        assert_eq!(session.ops, Ops::Delete);
+        let statement = Product::delete(Product::default());
+        assert_eq!(statement.entity, Product::default());
     }
 }

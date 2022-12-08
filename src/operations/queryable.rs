@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::Statement;
+use crate::statement::SelectStatement;
 
 pub trait Queryable<T> {
     /// Begin a Select session
-    fn find() -> Statement<T>;
+    fn find() -> SelectStatement<T>;
 }
 
 #[cfg(test)]
 mod test {
     use omi::prelude::*;
 
-    use crate::{self as omi, Ops};
+    use crate as omi;
 
     #[derive(Debug, Default, Clone, Entity, Queryable)]
     #[entity(table = "products")]
@@ -31,7 +31,7 @@ mod test {
 
     #[test]
     fn test_queryable_find() {
-        let session = Product::find();
-        assert_eq!(session.ops, Ops::Select);
+        let statement = Product::find();
+        assert_eq!(statement.offset, None);
     }
 }

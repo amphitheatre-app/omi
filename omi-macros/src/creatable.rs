@@ -5,8 +5,8 @@ pub fn impl_creatable(input: syn::DeriveInput) -> TokenStream {
 
     quote::quote! {
         impl omi::operations::Creatable<#ident> for #ident {
-            fn create(entity: #ident) -> omi::Statement<#ident> {
-                omi::Statement::new(omi::Ops::Insert)
+            fn create(entity: #ident) -> omi::statement::InsertStatement<#ident> {
+                omi::statement::InsertStatement::new(entity)
             }
         }
     }

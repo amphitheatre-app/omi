@@ -26,11 +26,15 @@ pub use queryable::*;
 mod updatable;
 pub use updatable::*;
 
-use crate::Statement;
+use crate::entity::Entity;
+use crate::statement::RawStatement;
 
 /// You can use the `raw()` method for edge cases where existing mechanisms
 /// or interfaces don't meet your needs, and it will still provide you with
 /// object mapping support.
-pub fn raw<T>(_sql: String) -> Statement<T> {
-    todo!()
+pub fn raw<T>(sql: String) -> RawStatement<T>
+where
+    T: Entity + Default + Clone,
+{
+    RawStatement::new(sql)
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::Statement;
+use crate::statement::UpdateStatement;
 
 pub trait Updatable<T> {
     /// Begin a update session, which accepts an optional entity and returns a
@@ -25,28 +25,28 @@ pub trait Updatable<T> {
     /// 2. Call without entity instance:
     /// It's mean you want to update the specified fields raw, this way, you need to
     /// call it like with T: `update::<T>()`, for tell Omi that what entity you specified.
-    fn update(entity: Option<T>) -> Statement<T>;
+    fn update(entity: Option<T>) -> UpdateStatement<T>;
 }
 
 #[cfg(test)]
 mod test {
     use omi::prelude::*;
 
-    use crate::{self as omi, Ops};
+    use crate as omi;
 
-    #[derive(Debug, Default, Clone, Entity, Updatable)]
+    #[derive(Debug, Default, Clone, Entity, Updatable, PartialEq)]
     #[entity(table = "products")]
     struct Product {}
 
     #[test]
     fn test_updatable_update_none() {
-        let session = Product::update(None);
-        assert_eq!(session.ops, Ops::Update);
+        let statement = Product::update(None);
+        assert_eq!(statement.entity, None);
     }
 
     #[test]
     fn test_updatable_update_instance() {
-        let session = Product::update(Some(Product::default()));
-        assert_eq!(session.ops, Ops::Update);
+        let statement = Product::update(Some(Product::default()));
+        assert_eq!(statement.entity, Some(Product::default()));
     }
 }

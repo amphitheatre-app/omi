@@ -5,8 +5,8 @@ pub fn impl_queryable(input: syn::DeriveInput) -> TokenStream {
 
     quote::quote! {
         impl omi::operations::Queryable<#ident> for #ident {
-            fn find() -> omi::Statement<#ident> {
-                omi::Statement::new(omi::Ops::Select)
+            fn find() -> omi::statement::SelectStatement<#ident> {
+                omi::statement::SelectStatement::new()
             }
         }
     }

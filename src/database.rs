@@ -21,7 +21,7 @@ impl Database {
         Self { dsn }
     }
 
-    pub fn query<T>(&self, sql: String) -> Result<Vec<T>, ()> {
+    pub fn query<T>(&self, _sql: String) -> Result<Vec<T>, crate::OmiError> {
         Ok(vec![])
     }
 }

@@ -5,8 +5,8 @@ pub fn impl_deletable(input: syn::DeriveInput) -> TokenStream {
 
     quote::quote! {
         impl omi::operations::Deletable<#ident> for #ident {
-            fn delete(entity: #ident) -> omi::Statement<#ident> {
-                omi::Statement::new(omi::Ops::Delete)
+            fn delete(entity: #ident) -> omi::statement::DeleteStatement<#ident> {
+                omi::statement::DeleteStatement::new(entity)
             }
         }
     }

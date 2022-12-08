@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod statement;
-pub use crate::statement::*;
-
 pub mod entity;
 pub mod operations;
+pub mod statement;
 pub use operations::raw;
 
 mod errors;
@@ -35,7 +33,7 @@ pub mod prelude {
 }
 
 pub mod order {
-    #[derive(Debug, PartialEq)]
+    #[derive(Debug, PartialEq, Clone)]
     pub enum Direction {
         Asc,
         Desc,

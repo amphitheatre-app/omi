@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::Statement;
+use crate::statement::InsertStatement;
 
 pub trait Creatable<T> {
     /// Begin a insert session, which accepts an entity and returns a Statement
     /// instance
-    fn create(entity: T) -> Statement<T>;
+    fn create(entity: T) -> InsertStatement<T>;
 }
 
 #[cfg(test)]
 mod test {
     use omi::prelude::*;
 
-    use crate::{self as omi, Ops};
+    use crate::{self as omi};
 
-    #[derive(Debug, Default, Clone, Entity, Creatable)]
+    #[derive(Debug, Default, Clone, Entity, Creatable, PartialEq)]
     #[entity(table = "products")]
     struct Product {}
 
     #[test]
     fn test_creatable_create() {
-        let session = Product::create(Product::default());
-        assert_eq!(session.ops, Ops::Insert);
+        let statement = Product::create(Product::default());
+        assert_eq!(statement.entity, Product::default());
     }
 }
