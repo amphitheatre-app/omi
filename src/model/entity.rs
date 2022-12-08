@@ -12,32 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod model;
-pub mod operations;
-pub mod statement;
-pub use operations::raw;
+use super::Meta;
 
-mod errors;
-pub use crate::errors::*;
-
-mod database;
-pub use crate::database::*;
-
-mod builder;
-
-pub mod prelude {
-    pub use omi_macros::{Creatable, Deletable, Entity, Queryable, Updatable};
-
-    pub use crate::model::Entity;
-    pub use crate::operations::{Creatable, Deletable, Queryable, Updatable};
+pub trait Entity {
+    fn meta() -> Meta;
 }
-
-pub mod order {
-    #[derive(Debug, PartialEq, Clone)]
-    pub enum Direction {
-        Asc,
-        Desc,
-    }
-}
-
-pub mod transaction;

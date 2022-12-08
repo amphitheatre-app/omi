@@ -26,7 +26,7 @@ pub use queryable::*;
 mod updatable;
 pub use updatable::*;
 
-use crate::entity::Entity;
+use crate::model::Entity;
 use crate::statement::RawStatement;
 
 /// You can use the `raw()` method for edge cases where existing mechanisms

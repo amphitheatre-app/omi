@@ -16,7 +16,7 @@ use std::collections::HashMap;
 
 use super::{Filters, Statement};
 use crate::builder::*;
-use crate::entity::Entity;
+use crate::model::Entity;
 use crate::{Database, OmiError, Result};
 
 // Represents a database UPDATE operation statement.
@@ -60,7 +60,7 @@ where
     pub fn execute(&self, db: &Database) -> Result<Vec<T>> {
         let sql = Builder::build(Statement::Update(self.clone()));
 
-        let result = db.query::<T>(sql);
+        let result = db.execute::<T>(sql);
 
         match result {
             Ok(entities) => Ok(entities),

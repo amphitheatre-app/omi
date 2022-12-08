@@ -14,7 +14,7 @@
 
 use super::{Filters, Statement};
 use crate::builder::*;
-use crate::entity::Entity;
+use crate::model::Entity;
 use crate::{Database, OmiError, Result};
 
 /// Represents a database DELETE operation statement.
@@ -47,7 +47,7 @@ where
     /// Implement the execute() method for the Statement type
     pub fn execute(&self, db: &Database) -> Result<Vec<T>> {
         let sql = Builder::build(Statement::Delete(self.clone()));
-        let result = db.query::<T>(sql);
+        let result = db.execute::<T>(sql);
 
         match result {
             Ok(entities) => Ok(entities),

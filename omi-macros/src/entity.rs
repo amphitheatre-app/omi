@@ -18,9 +18,9 @@ impl DeriveEntity {
             let values =
                 parse_keyed_strings(attr.tokens.clone().into_iter(), attr.span(), &["table"])
                     .map_err(|_| syn::Error::new(attr.span(), "expected `table` attribute"))?;
-            let value = values
-                .get("table")
-                .ok_or_else(|| syn::Error::new(attr.span(), "expected `table` attribute with string value"))?;
+            let value = values.get("table").ok_or_else(|| {
+                syn::Error::new(attr.span(), "expected `table` attribute with string value")
+            })?;
             get_table_name(&ident, value)
         } else {
             get_table_name(&ident, "")
@@ -38,10 +38,13 @@ impl DeriveEntity {
         let table_name = &self.table_name;
 
         quote::quote! {
-            impl omi::entity::Entity for #ident {
-                fn meta() -> omi::entity::Meta {
-                    omi::entity::Meta{
-                        table: String::from(#table_name),
+            impl omi::model::Entity for #ident {
+                fn meta() -> omi::model::Meta {
+                    omi::model::Meta{
+                        table: omi::model::Table {
+                            name: String::from(#table_name),
+                            ..Default::default()
+                        },
                     }
                 }
             }

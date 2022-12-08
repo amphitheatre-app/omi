@@ -17,11 +17,11 @@ pub struct Database {
 }
 
 impl Database {
-    pub fn new(dsn: String) -> Self {
+    pub fn connect(dsn: String) -> Self {
         Self { dsn }
     }
 
-    pub fn query<T>(&self, _sql: String) -> Result<Vec<T>, crate::OmiError> {
+    pub fn execute<T>(&self, _sql: String) -> Result<Vec<T>, crate::OmiError> {
         Ok(vec![])
     }
 }

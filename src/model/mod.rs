@@ -12,27 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub trait Entity {
-    fn meta() -> Meta;
-}
+mod entity;
+pub use self::entity::Entity;
 
-#[derive(Debug, Default)]
-pub struct Meta {
-    pub table: String,
-}
+mod meta;
+pub use self::meta::Meta;
 
-#[cfg(test)]
-mod test {
-    use omi::prelude::*;
+mod table;
+pub use self::table::*;
 
-    use crate as omi;
-
-    #[derive(Debug, Default, Clone, Entity)]
-    #[entity(table = "products")]
-    struct Product {}
-
-    #[test]
-    fn test_entity_meta() {
-        assert_eq!(Product::meta().table, "products");
-    }
-}
+mod column;
+pub use self::column::*;

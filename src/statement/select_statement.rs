@@ -17,7 +17,7 @@ use std::marker::PhantomData;
 
 use super::{Filters, Statement};
 use crate::builder::*;
-use crate::entity::Entity;
+use crate::model::Entity;
 use crate::order::Direction;
 use crate::{Database, OmiError, Result};
 
@@ -112,7 +112,7 @@ where
         self.limit = Some(1);
 
         let sql = Builder::build(Statement::Select(self.clone()));
-        let result = db.query::<T>(sql);
+        let result = db.execute::<T>(sql);
 
         match result {
             Ok(entities) => match entities.first() {
@@ -126,7 +126,7 @@ where
     /// Fetch multiple rows
     pub fn all(&self, db: &Database) -> Result<Vec<T>> {
         let sql = Builder::build(Statement::Select(self.clone()));
-        let result = db.query::<T>(sql);
+        let result = db.execute::<T>(sql);
 
         match result {
             Ok(entities) => match !entities.is_empty() {

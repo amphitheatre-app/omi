@@ -1,6 +1,6 @@
 use sql_query_builder as sql;
 
-use crate::entity::Entity;
+use crate::model::Entity;
 use crate::statement::*;
 
 pub struct Builder {}
@@ -45,7 +45,10 @@ impl Builder {
         T: Entity,
     {
         let meta = T::meta();
-        sql::Select::new().select("*").from(&meta.table).as_string()
+        sql::Select::new()
+            .select("*")
+            .from(&meta.table.name)
+            .as_string()
     }
 
     fn build_update_sql<T>(_statement: UpdateStatement<T>) -> String

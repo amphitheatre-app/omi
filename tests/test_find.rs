@@ -32,7 +32,7 @@ impl Default for Product {
 
 #[test]
 fn test_find_one() {
-    let db = Database::new("mysql://root:123456@omi".into());
+    let db = Database::connect("mysql://root:123456@omi".into());
     let result = Product::find().one(&db);
 
     match result {
@@ -43,7 +43,7 @@ fn test_find_one() {
 
 #[test]
 fn test_find_all() {
-    let db = Database::new("mysql://root:123456@omi".into());
+    let db = Database::connect("mysql://root:123456@omi".into());
     let result = Product::find().all(&db);
 
     match result {
