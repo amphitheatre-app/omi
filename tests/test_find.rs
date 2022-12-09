@@ -18,14 +18,34 @@ use omi::{Database, OmiError};
 #[derive(Debug, Entity, Queryable, PartialEq, Clone)]
 #[entity(table = "products")]
 struct Product {
-    #[column(length = 255, default = "")]
+    #[column(primary, auto)]
+    id: u64,
+
+    #[column(size = 255, default = "", index)]
     title: String,
+    
+    #[column(type = "float", attrs(max_digits = 8, decimal_places = 2))]
+    price: f32,
+
+    remark: Option<String>,
+
+    #[column(rename = "type")]
+    product_type: String,
+
+    #[column(default = "true")]
+    enabled: bool,
+
 }
 
 impl Default for Product {
     fn default() -> Self {
         Self {
+            id: 1,
             title: "test".into(),
+            price: 36.88,
+            remark: None,
+            product_type: String::from("toys"),
+            enabled: true,
         }
     }
 }
