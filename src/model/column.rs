@@ -35,11 +35,14 @@ pub struct Column {
 #[derive(Debug)]
 pub enum DataKind {
     /// An integer data type.
-    Integer,
+    Integer(Option<usize>),
     /// A floating-point number data type.
-    Float,
+    Float {
+        max_digits: Option<usize>,
+        decimal_places: Option<usize>,
+    },
     /// A text data type.
-    Text,
+    Text(Option<usize>),
     /// A binary data type.
     Blob,
     /// A timestamp data type.

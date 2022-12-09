@@ -29,15 +29,15 @@ available, so stay tuned!
 ```rust
 use omi::prelude::*
 
-#[entity(table = "products")]
 #[derive(Entity, Queryable, Creatable, Updatable, Deletable)]
+#[entity(table = "products")]
 pub struct Product {
   /// Auto incremented primary key
-  #[column(primary, auto, null)]
+  #[column(primary, auto)]
   id: u64,
 
   /// The title of product
-  #[column(length = 255, default = "")]
+  #[column(size = 255, default = "")]
   title: String
 
   /// The brand of this product
@@ -45,7 +45,7 @@ pub struct Product {
   brand: Brand,
 
   /// Has many reviews
-  #[relation(has_many)
+  #[relation(has_many)]
   reviews: Vec<Review>,
 }
 ```
