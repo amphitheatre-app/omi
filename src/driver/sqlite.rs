@@ -12,33 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod model;
-pub mod operations;
-pub mod statement;
-pub use operations::raw;
+use super::Driver;
 
-mod errors;
-pub use crate::errors::*;
-
-mod database;
-pub use crate::database::*;
-
-mod builder;
-
-pub mod prelude {
-    pub use omi_macros::{Creatable, Deletable, Entity, Queryable, Updatable};
-
-    pub use crate::model::Entity;
-    pub use crate::operations::{Creatable, Deletable, Queryable, Updatable};
+pub struct SqliteDriver {
+    // FIXME: Real Connection
+    // connection: SqliteConnection,
 }
 
-pub mod order {
-    #[derive(Debug, PartialEq, Clone)]
-    pub enum Direction {
-        Asc,
-        Desc,
+impl Driver for SqliteDriver {
+    fn connect(&mut self) {
+        todo!()
+    }
+
+    fn disconnect(&mut self) {
+        todo!()
+    }
+
+    fn execute(&self, _query: String) -> Result<(), crate::OmiError> {
+        todo!()
     }
 }
-
-pub mod driver;
-pub mod transaction;

@@ -20,3 +20,8 @@ omi-macros = { path = "./omi-macros" }
 
 [workspace]
 members = [ "omi-macros" ]
+
+[features]
+mysql = []
+postgres = []
+sqlite = []

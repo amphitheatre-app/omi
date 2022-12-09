@@ -12,33 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod model;
-pub mod operations;
-pub mod statement;
-pub use operations::raw;
+use crate::OmiError;
 
-mod errors;
-pub use crate::errors::*;
+#[cfg(feature = "mysql")]
+mod mysql;
 
-mod database;
-pub use crate::database::*;
+#[cfg(feature = "mysql")]
+pub use self::mysql::MySQLDriver;
 
-mod builder;
+#[cfg(feature = "postgres")]
+mod postgres;
+#[cfg(feature = "postgres")]
+pub use self::postgres::PostgresDriver;
 
-pub mod prelude {
-    pub use omi_macros::{Creatable, Deletable, Entity, Queryable, Updatable};
+#[cfg(feature = "sqlite")]
+mod sqlite;
+#[cfg(feature = "sqlite")]
+pub use self::sqlite::SqliteDriver;
 
-    pub use crate::model::Entity;
-    pub use crate::operations::{Creatable, Deletable, Queryable, Updatable};
+pub trait Driver {
+    fn connect(&mut self);
+    fn disconnect(&mut self);
+    fn execute(&self, query: String) -> Result<(), OmiError>;
 }
-
-pub mod order {
-    #[derive(Debug, PartialEq, Clone)]
-    pub enum Direction {
-        Asc,
-        Desc,
-    }
-}
-
-pub mod driver;
-pub mod transaction;
