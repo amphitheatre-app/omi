@@ -1,4 +1,4 @@
-# Omi - Object Mapping Intelligently
+# Omi - Object Mapping Intelligently (WIP)
 
 A library that maps object structures to relational databases and provides
 interfaces for common queries and updates.
