@@ -1,4 +1,4 @@
-// Copyright 2022 The Amphitheatre Authors.
+// Copyright (c) The Amphitheatre Authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ struct Product {
 
     #[column(size = 255, default = "", index)]
     title: String,
-    
+
     #[column(type = "float", attrs(max_digits = 8, decimal_places = 2))]
     price: f32,
 
@@ -34,7 +34,6 @@ struct Product {
 
     #[column(default = "true")]
     enabled: bool,
-
 }
 
 impl Default for Product {

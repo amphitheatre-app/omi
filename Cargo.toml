@@ -9,7 +9,7 @@ edition = "2021"
 license = "Apache-2.0"
 readme = "README.md"
 authors = [
-    "Eguo Wang <wang@gmail.com>",
+    "Eguo Wang <wangeguo@gmail.com>",
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
